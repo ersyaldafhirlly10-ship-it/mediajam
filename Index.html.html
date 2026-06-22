@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Pembelajaran: Membaca Jam</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f0ff 0%, #f0fff4 100%);
+      min-height: 100vh;
+      padding: 30px 16px;
+      color: #1a1a1a;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a5fa8;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 28px;
+    }
+
+    .main {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* ── JAM ── */
+    .clock-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    #clockSvg {
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.12));
+    }
+
+    .digital {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #1a5fa8;
+      font-family: 'Courier New', monospace;
+      background: white;
+      border: 2px solid #cde;
+      border-radius: 10px;
+      padding: 6px 20px;
+    }
+
+    /* ── PANEL KANAN ── */
+    .panel {
+      flex: 1;
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 12px;
+    }
+
+    /* Keterangan jarum */
+    .leg-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .leg-row:last-child { margin-bottom: 0; }
+
+    .leg-line {
+      width: 36px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .leg-text { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+    .leg-sub  { font-size: 12px; color: #666; margin-top: 2px; }
+
+    /* Kuis */
+    .quiz-card { background: #f0f7ff; border: 1.5px solid #b8d4f8; border-radius: 14px; padding: 16px 18px; }
+    .quiz-q    { font-size: 14px; color: #444; margin-bottom: 10px; }
+    .quiz-ans  {
+      display: none;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a5fa8;
+      margin-bottom: 12px;
+      background: white;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1.5px solid #b8d4f8;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #1a5fa8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #1348861; }
+    button:active { transform: scale(0.98); }
+
+    /* Tips */
+    .tip-card {
+      background: white;
+      border-left: 4px solid #1D9E75;
+      border-radius: 0 12px 12px 0;
+      padding: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tip-card p { font-size: 13px; color: #444; line-height: 1.7; }
+    .tip-card strong { color: #1a1a1a; }
+
+    /* Cara baca step */
+    .steps-card { background: white; border-radius: 14px; padding: 16px 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+    .step-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .step-row:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #1a5fa8; color: white;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: 13px; color: #444; line-height: 1.5; }
+
+    @media (max-width: 580px) {
+      .main { flex-direction: column; align-items: center; }
+      .panel { width: 100%; max-width: 340px; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🕐 Ayo Belajar Membaca Jam!</h1>
+  <p class="subtitle">Perhatikan arah gerak jarum jam — jam analog yang menunjukkan waktu nyata</p>
+
+  <div class="main">
+
+    <!-- JAM ANALOG -->
+    <div class="clock-wrap">
+      <svg id="clockSvg" viewBox="0 0 260 260" width="240" height="240" xmlns="http://www.w3.org/2000/svg">
+        <!-- Lingkaran luar -->
+        <circle cx="130" cy="130" r="126" fill="white" stroke="#c0cfe0" stroke-width="1.5"/>
+        <circle cx="130" cy="130" r="118" fill="none" stroke="#dde7f2" stroke-width="1"/>
+
+        <!-- Tik -->
+        <g id="ticks"></g>
+
+        <!-- Angka 1-12 -->
+        <g id="numbers"></g>
+
+        <!-- Jarum Jam (hitam, pendek) -->
+        <line id="hourHand" x1="130" y1="130" x2="130" y2="72"
+              stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"/>
+
+        <!-- Jarum Menit (biru, panjang) -->
+        <line id="minHand" x1="130" y1="130" x2="130" y2="52"
+              stroke="#1a5fa8" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- Jarum Detik (merah, kurus) -->
+        <line id="secHand" x1="130" y1="130" x2="130" y2="42"
+              stroke="#c0392b" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Titik tengah -->
+        <circle cx="130" cy="130" r="7" fill="#1a1a1a"/>
+        <circle cx="130" cy="130" r="3" fill="white"/>
+      </svg>
+
+      <div class="digital" id="digital">--:--:--</div>
+    </div>
+
+    <!-- PANEL KANAN -->
+    <div class="panel">
+
+      <!-- Keterangan jarum -->
+      <div class="card">
+        <div class="card-title">Keterangan Jarum</div>
+        <div class="leg-row">
+          <div class="leg-line" style="height:7px; background:#1a1a1a;"></div>
+          <div>
+            <div class="leg-text">Jarum Pendek</div>
+            <div class="leg-sub">Penunjuk JAM — berputar 1× dalam 12 jam</div>
+          </div>
+        </div>
+        <div class="leg-row">
+          <div class="leg-line" style="height:5px; background:#1a5fa8;"></div>
+          <div>
+            <div class="leg-text">Jarum Panjang</div>
+            <div class="leg-sub">Penunjuk MENIT — berputar 1× dalam 60 menit</div>
+          </div>
+        </div>
+        <div class="leg-row">
+          <div class="leg-line" style="height:2px; background:#c0392b;"></div>
+          <div>
+            <div class="leg-text">Jarum Kurus Merah</div>
+            <div class="leg-sub">Penunjuk DETIK — berputar 1× dalam 60 detik</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kuis -->
+      <div class="quiz-card">
+        <div class="quiz-q">🤔 Sekarang jam berapa? Tebak dulu, baru klik!</div>
+        <div class="quiz-ans" id="quizAns"></div>
+        <button id="quizBtn" onclick="toggleAnswer()">Lihat Jawaban ✓</button>
+      </div>
+
+      <!-- Cara membaca -->
+      <div class="steps-card">
+        <div class="card-title">Cara Membaca Jam</div>
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-text">Lihat <strong>jarum pendek</strong> — angka yang ditunjuk = <strong>JAM</strong></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-text">Lihat <strong>jarum panjang</strong> — angka × 5 = <strong>MENIT</strong><br>
+            Contoh: jarum di angka 3 → 3 × 5 = <strong>15 menit</strong></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-text">Gabungkan: "Pukul [jam] lewat [menit] menit"</div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="tip-card">
+        <p>💡 <strong>Ingat!</strong> Ada 60 garis kecil di sekeliling jam.
+          Setiap angka berjarak 5 garis (5 menit).
+          Jika jarum panjang tepat di angka 12, berarti <strong>tepat (pas)</strong>.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function createTicks() {
+      const g = document.getElementById('ticks');
+      for (let i = 0; i < 60; i++) {
+        const angle = i * 6 * Math.PI / 180;
+        const isMajor = i % 5 === 0;
+        const r1 = 116;
+        const r2 = isMajor ? 100 : 110;
+        const x1 = 130 + r1 * Math.sin(angle);
+        const y1 = 130 - r1 * Math.cos(angle);
+        const x2 = 130 + r2 * Math.sin(angle);
+        const y2 = 130 - r2 * Math.cos(angle);
+        const line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.setAttribute('stroke', isMajor ? '#333' : '#c0cfe0');
+        line.setAttribute('stroke-width', isMajor ? '2.5' : '1');
+        g.appendChild(line);
+      }
+    }
+
+    function createNumbers() {
+      const g = document.getElementById('numbers');
+      for (let i = 1; i <= 12; i++) {
+        const angle = i * 30 * Math.PI / 180;
+        const r = 84;
+        const x = 130 + r * Math.sin(angle);
+        const y = 130 - r * Math.cos(angle) + 5.5;
+        const t = document.createElementNS(NS, 'text');
+        t.setAttribute('x', x);
+        t.setAttribute('y', y);
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('font-size', '15');
+        t.setAttribute('font-weight', '700');
+        t.setAttribute('font-family', 'Arial, sans-serif');
+        t.setAttribute('fill', '#1a1a1a');
+        t.textContent = i;
+        g.appendChild(t);
+      }
+    }
+
+    function setHand(id, deg, length) {
+      const rad = (deg - 90) * Math.PI / 180;
+      const x2 = 130 + length * Math.cos(rad);
+      const y2 = 130 + length * Math.sin(rad);
+      const el = document.getElementById(id);
+      el.setAttribute('x2', x2);
+      el.setAttribute('y2', y2);
+    }
+
+    let nowTime = null;
+
+    function updateClock() {
+      const now = new Date();
+      nowTime = now;
+      const s = now.getSeconds();
+      const m = now.getMinutes();
+      const h = now.getHours() % 12;
+
+      setHand('secHand', s * 6,         88);
+      setHand('minHand', m * 6 + s * 0.1, 76);
+      setHand('hourHand', h * 30 + m * 0.5, 56);
+
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(m).padStart(2, '0');
+      const ss = String(s).padStart(2, '0');
+      document.getElementById('digital').textContent = hh + ':' + mm + ':' + ss;
+    }
+
+    let shown = false;
+    function toggleAnswer() {
+      const ans = document.getElementById('quizAns');
+      const btn = document.getElementById('quizBtn');
+      if (!shown) {
+        if (nowTime) {
+          const h = nowTime.getHours();
+          const m = nowTime.getMinutes();
+          const period = h < 12 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
+          const h12 = h % 12 === 0 ? 12 : h % 12;
+          const pad = n => String(n).padStart(2, '0');
+          ans.textContent = 'Pukul ' + pad(h12) + ':' + pad(m) + ' ' + period;
+        }
+        ans.style.display = 'block';
+        btn.textContent = 'Sembunyikan Jawaban ✕';
+        shown = true;
+      } else {
+        ans.style.display = 'none';
+        btn.textContent = 'Lihat Jawaban ✓';
+        shown = false;
+      }
+    }
+
+    createTicks();
+    createNumbers();
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+
+</body>
+</html>
